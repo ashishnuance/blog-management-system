@@ -1,0 +1,25 @@
+.card-header.blog-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.bootstrap-tagsinput .tag {
+    margin-right: 2px;
+    color: white;
+    background: #999 !important;
+    padding: 3px;
+}
+.blog-create-form .form-group{
+    padding-bottom: 20px;
+}
+.blog-create-form .bootstrap-tagsinput{
+    width: 100%;
+}
+.invalid-feedback{
+    display: block !important;
+}
+.blog-date-time div{
+    min-width:30%;
+    width: 100%;
+}
