@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Blog;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateBlogRequest extends FormRequest
+class CreateCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,8 @@ class CreateBlogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'=>'required|max:250',
-            'category'=>'required|array|min:1',
-            'tags'=>'required',
-            'sechedule_post_on_date'=>'required|date',
-            'sechedule_post_on_time'=>'required|date_format:H:i',
-            'image_video_file.*'=>'required|mimes:jpg,jpeg,gif,png,webp,svg,mp4,webm'
-        ];
+            'blog_id'=>'required',
+            'message'=>'required|max:250'
+         ];
     }
 }

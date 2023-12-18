@@ -7,17 +7,7 @@
                 @csrf
                 <div class="row">
                     <div class="col-md-12 m-auto">
-                        @if(Session::has('success'))
-                            <div class="alert alert-success alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert">×</button>
-                                {{ Session::get('success') }}
-                            </div>
-                        @elseif(Session::has('failed'))
-                            <div class="alert alert-danger alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert">×</button>
-                                {{ Session::get('failed') }}
-                            </div>
-                        @endif
+                        @include('partials.flash-message')
                         <div class="card shadow">
                             <div class="card-header">
                                 <h4 class="card-title"> Create Blog </h4>
@@ -104,7 +94,7 @@
                                 <!-- Description -->
                                 <div class="form-group">
                                     <label> Description </label>
-                                    <textarea class="form-control" id="content" placeholder="Enter the Description" rows="5" name="body"></textarea>
+                                    <textarea class="form-control" id="content" placeholder="Enter the Description" rows="5" name="description"></textarea>
                                 </div>
                             </div>
                             <div class="card-footer">

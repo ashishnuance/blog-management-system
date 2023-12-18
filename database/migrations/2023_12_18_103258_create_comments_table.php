@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('blog_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->string('message')->nullable();
-            $table->integer('parent_id')->default(null);
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
             $table->foreign('blog_id')->references('id')->on('blogs')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

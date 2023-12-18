@@ -42,7 +42,11 @@
     <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.min.js"></script>
 
     @yield('page-script')
-
+    <script>
+        $(document).ready(function(){
+            $('.alert').fadeOut(3000);
+        });
+    </script>
 
 </body>
 </html>

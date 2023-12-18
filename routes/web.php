@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BlogController;
+use App\http\Controllers\CommentsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,13 +22,24 @@ use App\Http\Controllers\BlogController;
 
 Auth::routes();
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::middleware('auth')->group(function(){
 
-Route::controller(BlogController::class)->group(function(){
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    
+    Route::controller(BlogController::class)->group(function(){
+        
+        Route::get('/','index')->name('blogs');
+        Route::get('blog/{slug}','show')->name('blog-detail');
+        Route::get('blog-create','create')->name('blog-create');
+        Route::post('blog-store','store')->name('blog');
+        
+    });
 
-    Route::get('/','index')->name('blogs');
-    Route::get('blog/{slug}','show')->name('blog');
-    Route::get('blog-create','create')->name('blog-create');
-    Route::post('blog-store','store')->name('blog');
+    Route::controller(CommentsController::class)->group(function(){
+        
+        
+        Route::post('comment-store','store')->name('comment');
+        
+    });
 
 });
