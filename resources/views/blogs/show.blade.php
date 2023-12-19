@@ -23,33 +23,49 @@
                     @endforeach
                     </h5>
                     @endif
+                    
                     @if($blogResponse->media->count()>0)
+                    <div class="row">
                     @foreach($blogResponse->media as $media)
+                    
                         @if($media->media_filetype=='image')
-                        <img src="{{ $media->media_filename }}" class="img-responsive" />
+                        <div class="col-md-3">
+                            <img src="{{ route('media-files',[$media->media_filename]) }}" class="blog-image" />
+                        </div>
                         @endif
                         @if($media->media_filetype=='video')
-                            <video width="320" height="240" controls>
-                            <source src="{{ $media->media_filename }}" type="video/mp4">
-                            <source src="{{ $media->media_filename }}" type="video/webm">
+                        <div class="col-md-3">
+                            <video width="100%" height="240" controls>
+                            <source src="{{ route('media-files',[$media->media_filename]) }}" type="video/mp4">
+                            <source src="{{ route('media-files',[$media->media_filename]) }}" type="video/webm">
                             Your browser does not support the video tag.
                             </video>
+                        </div>
                         @endif
                     @endforeach
+                    </div>
                     @endif
-                    
+                    <div class="blog-description py-3">
+                    <h4>Description:</h4>
                     {!! (isset($blogResponse->description) && $blogResponse->description!='') ? $blogResponse->description : '' !!}
-
-                    <p>Likes: <span>{{ $blogResponse->blogLike->count() }}<span></p>
+                    </div>
+                    <p>
+                        <a href="javascript:void(0);" data-blogid="" onclick="likeblog({{ $blogResponse->id }})">
+                            <img src="{{ asset('icons/like-icon.svg') }}" style="width:25px;"/>
+                        </a>
+                        <span class="like-count">{{ $blogResponse->blogLike->count() }}<span>
+                    </p>
                     @include('partials.flash-message')
                     @if(isset($comments) && $comments->count()>0)
                     <h4 class="py-2">Comments</h4>
-                    {!! $comments_html !!}
+                    <div class="comment-replies-section">
+                        {!! $comments_html !!}
+                    </div>
                     @endif
                     <h4 class="py-3">Write Comment on blog</h4>
-                    <form action="{{ route('comment') }}" method="POST" class="comment-form">
+                    <form action="{{ route('comment') }}" method="POST" class="comment-form" onsubmit="commentform(event,this)">
                         <input type="hidden" name="blog_id" value="{{ $blogResponse->id }}"/>
-                        <input type="hidden" name="parent_id" value="0"/>
+                        <!-- <input type="hidden" name="parent_id" value="0"/> -->
                         @csrf
                         <div class="row">
                             <div class="col-md-12 m-auto">
@@ -60,9 +76,7 @@
                                         <!-- Blog title -->
                                         <div class="form-group">
                                             <label> Comment </label>
-                                            <textarea placeholder="Write Comment" name="message" class="form-control">
-
-                                            </textarea>
+                                            <textarea placeholder="Write Comment" name="message" class="form-control"></textarea>
                                             @error('message')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -86,9 +100,42 @@
 @endsection
 @section('page-script')
 <script>
-    $(document).ready(function(){
+    function likeblog(blogId){
+        console.log('blogId',blogId);
+        $.ajax({
+            url:'{{ route("like-blog") }}',
+            type:'post',
+            data:{blog_id:blogId,'_token':'{{@csrf_token()}}'},
+            success:function(response){
+                if(response.status){
+                $('.like-count').html(response.like_count);
+                }
+            }
+        });
+    }
 
-        $('.write-reply').click(function(){
+    function commentform(e,element){
+        e.preventDefault();
+        console.log('form',$(element).serialize());
+        $.ajax({
+            url:'{{ route("comment-replies") }}',
+            type:'post',
+            data:$(element).serialize(),
+            success:function(response){
+                if(response.status){
+                // console.log('response',response);
+                    $('.comment-replies-section').html(response.data);
+                }
+            }
+        });
+        $(element).find('textarea').val('');
+        return false;
+    }
+    $(document).ready(function(){
+        // $('body').on('submit','.comment-form',function(e){
+            
+        // })
+        $('body').on('click','.write-reply',function(){
             console.log('reply');
             $('form.reply-comment-form').hide();
             $(this).parent().find('form.reply-comment-form').show();

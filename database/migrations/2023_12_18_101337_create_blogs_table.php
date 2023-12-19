@@ -18,7 +18,7 @@ return new class extends Migration
             $table->longText('description')->nullable();
             $table->text('tags')->nullable();
             $table->string('category')->nullable();
-            $table->timestamp('sechedule_post_on',$precision = 0);
+            $table->datetime('sechedule_post_on',$precision = 0);
             $table->tinyInteger('published_status')->default(0)->comment('0=unpublished,1=published');
             $table->timestamps();
         });

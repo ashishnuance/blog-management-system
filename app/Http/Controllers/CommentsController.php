@@ -8,15 +8,15 @@ use App\Http\Requests\CreateCommentRequest;
 
 class CommentsController extends Controller
 {
-    private $CommentService;
+    private $commentService;
 
 	/**
 	 *  CommentController constructor.
 	 *
 	 * @param commentService $service
 	 */
-	public function __construct(CommentService $CommentService) {
-		$this->commentService = $CommentService;
+	public function __construct(CommentService $commentService) {
+		$this->commentService = $commentService;
 	}
 
     /**
@@ -33,6 +33,24 @@ class CommentsController extends Controller
             return redirect()->back()->with('error',__('Try again'));
         }
 
+    }
+
+    /**
+     * Store replies on blog.
+     */
+    function storeReplies(CreateCommentRequest $request){
+
+        // Create comment on blog
+        $commentResponse = $this->commentService->createComment($request->all());
         
+        if($commentResponse){
+            $comments = $this->commentService->getCommentsReplies($request->blog_id);
+
+            $comments_html = $this->comments_replies($comments,$request->blog_id);
+        
+            return response()->json(['status'=>true,'message'=>__('Comment posted successfully'),'data'=>$comments_html],200);
+        }else{
+            return response()->json(['status'=>false,'message'=>__('Try again')],200);
+        }
     }
 }

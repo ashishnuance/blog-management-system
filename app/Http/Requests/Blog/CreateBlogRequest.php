@@ -27,7 +27,8 @@ class CreateBlogRequest extends FormRequest
             'tags'=>'required',
             'sechedule_post_on_date'=>'required|date',
             'sechedule_post_on_time'=>'required|date_format:H:i',
-            'image_video_file.*'=>'required|mimes:jpg,jpeg,gif,png,webp,svg,mp4,webm'
+            'image_video_file'=>'required',
+            'image_video_file.*'=>'mimes:jpg,jpeg,gif,png,webp,svg,mp4,webm'
         ];
     }
 }

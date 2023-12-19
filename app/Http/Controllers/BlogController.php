@@ -7,21 +7,21 @@ use App\Models\{Blog,Category,Comments};
 use App\Jobs\FileUploadJob;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Blog\CreateBlogRequest;
-use App\Services\BlogService;
+use App\Services\{BlogService,CommentService};
 
 class BlogController extends Controller
 {
     private $blogService;
-
-    protected $html;
+    private $commentService;
 
 	/**
 	 * BlogController constructor.
 	 *
-	 * @param BlogService $service
+	 * @param BlogService,CommentService $service 
 	 */
-	public function __construct(BlogService $blogService) {
+	public function __construct(BlogService $blogService,CommentService $commentService) {
 		$this->blogService = $blogService;
+		$this->commentService = $commentService;
 	}
 
     /**
@@ -47,14 +47,14 @@ class BlogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateBlogRequest $request)
+    public function store(CreateBlogRequest $request) // 
     {
-        
         // Create blog by service
         $blogResponse = $this->blogService->createBlog($request);
         
         // Upload blog media by service
         if($request->has('image_video_file') && $blogResponse){
+
             $blogMediaResponse = $this->blogService->uploadMediaFile($blogResponse->id,$request);
             
         }
@@ -73,32 +73,18 @@ class BlogController extends Controller
      */
     public function show(string $slug)
     {
-        $blogResponse = Blog::select('id','category','title','slug','sechedule_post_on','tags','description')->with(['media','blogLike','blogComment'])->where('published_status',1)->where('slug',$slug)->first();
+        // Get blog detail by slug
+        $blogResponse = $this->blogService->getBlogDetail($slug);
+
+        // Get all comment and replies
+        $comments = $this->commentService->getCommentsReplies($blogResponse->id);
         
-        $blogResponse->category = Category::select('id','name')->whereIn('id',explode(',',$blogResponse->category))->get();
+        // Generate comment and replies html
+        $comments_html = $this->comments_replies($comments,$blogResponse->id);
         
-        $comments = Comments::with(['user','replies'])->where('blog_id',$blogResponse->id)->whereNull('parent_id')->get();
-        // $commentsArray = [];
-        // foreach($comments as $comment){
-        //     echo $comment->id.'<br>';
-        //     $commentsArray[$comment->id] = $comment;
-        //     $commentsArray[$comment->id]['reply'] = Comments::with('user')->where('parent_id',$comment->id)->get();
-        // }
-        $comments_html = $this->comment_replay($comments);
-        // dd($comments_html);
         return view('blogs.show',compact('blogResponse','comments','comments_html'));
     }
 
-    function comment_replay($comments){
-        foreach($comments as $c => $comment_value){ 
-            
-            $this->html .= view('partials.comment-reply-form',compact('comment_value'))->render();
-            
-            if($comment_value->replies->count()>0){
-                $this->comment_replay($comment_value->replies);
-            }
-        }
-        return $this->html;
-    }
+    
     
 }

@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('content')
-        
+@if($errors->has('image_video_file'))
+        <?php 
+            // dd($errors->get('image_video_file'))
+        ?>
+        @endif
         <div class="container mt-5">
             
             <form action="{{ route('blog') }}" method="POST" class="blog-create-form" enctype="multipart/form-data">
@@ -48,11 +52,14 @@
                                 <div class="form-group">
                                     <label> Images/Videos </label>
                                     <input type="file" class="form-control" name="image_video_file[]" multiple accept="image/*,video/*">
-                                    @error('image_video_file')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    @if($errors->has('image_video_file'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>
+                                            {{ $errors->get('image_video_file')[0] }}
+                                        </strong>
+                                    </span>
+                                    @endif
+                                    
                                 </div>
 
                                 <!-- Tags -->
