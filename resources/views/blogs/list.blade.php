@@ -28,6 +28,9 @@
                                 </a>
                             </div>
                         @endforeach
+                    @else
+                    <h4>{{__('No Blog Found')}}</h4>
+                    <a href="{{ route('blog-create') }}">Create blog</a>
                     @endif
                     </div>
                 </div>

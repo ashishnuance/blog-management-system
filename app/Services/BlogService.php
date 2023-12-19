@@ -57,8 +57,9 @@ class BlogService {
         $blogResponse = Blog::select('id','category','title','slug','sechedule_post_on','tags','description')->with(['media','blogLike','blogComment'])->where('published_status',1)->where('slug',$slug)->first();
         
         // Get category name
+        if(isset($blogResponse->category) && $blogResponse->category!=''){
         $blogResponse->category = Category::select('id','name')->whereIn('id',explode(',',$blogResponse->category))->get();
-        
+        }
         return $blogResponse;
     }
 

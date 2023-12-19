@@ -12,6 +12,7 @@
                 </div>
 
                 <div class="card-body">
+                    @if(isset($blogResponse))
                     <h3><strong>{{ ucfirst($blogResponse->title) }}</strong></h3>
                     <h5>Tags: {{ $blogResponse->title }}</h5>
                     <h5>Published On: {{ $blogResponse->sechedule_post_on }}</h5>
@@ -56,12 +57,12 @@
                         <span class="like-count">{{ $blogResponse->blogLike->count() }}<span>
                     </p>
                     @include('partials.flash-message')
-                    @if(isset($comments) && $comments->count()>0)
+                    
                     <h4 class="py-2">Comments</h4>
                     <div class="comment-replies-section">
                         {!! $comments_html !!}
                     </div>
-                    @endif
+                    
                     <h4 class="py-3">Write Comment on blog</h4>
                     <form action="{{ route('comment') }}" method="POST" class="comment-form" onsubmit="commentform(event,this)">
                         <input type="hidden" name="blog_id" value="{{ $blogResponse->id }}"/>
@@ -92,6 +93,10 @@
                             </div>
                         </div>
                     </form>
+                    
+                    @else
+                    <a href="{{ route('blogs') }}">Blog List</a>
+                    @endif
                 </div>
             </div>
         </div>

@@ -73,14 +73,17 @@ class BlogController extends Controller
      */
     public function show(string $slug)
     {
+        $comments_html = $comments = '';
         // Get blog detail by slug
         $blogResponse = $this->blogService->getBlogDetail($slug);
 
-        // Get all comment and replies
-        $comments = $this->commentService->getCommentsReplies($blogResponse->id);
-        
-        // Generate comment and replies html
-        $comments_html = $this->comments_replies($comments,$blogResponse->id);
+        if(isset($blogResponse) && $blogResponse!=''){
+            // Get all comment and replies
+            $comments = $this->commentService->getCommentsReplies($blogResponse->id);
+            
+            // Generate comment and replies html
+            $comments_html = $this->comments_replies($comments,$blogResponse->id);
+        }
         
         return view('blogs.show',compact('blogResponse','comments','comments_html'));
     }
