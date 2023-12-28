@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
+        "pion/laravel-chunk-upload": "^1.5",
         "qirolab/laravel-reactions": "^2.7"
     },
     "require-dev": {

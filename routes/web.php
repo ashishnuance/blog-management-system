@@ -5,6 +5,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BlogController;
 use App\http\Controllers\CommentsController;
 use App\http\Controllers\LikeController;
+use App\http\Controllers\MediaLibraryController;
+use App\http\Controllers\UploaderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,5 +47,15 @@ Route::middleware('auth')->group(function(){
         Route::post('comment-store-replies','storeReplies')->name('comment-replies');
         
     });
+
+    //Media library routes
+    Route::get('/medialibrary', [MediaLibraryController::class, 'mediaLibrary'])->name('media-library');
+
+    //FILE UPLOADS CONTROLER
+    Route::controller(UploaderController::class)->group(function(){
+        Route::post('medialibrary/upload', 'store')->name('file-upload');
+        Route::post('medialibrary/delete', 'delete')->name('file-delete');
+    });
+
 
 });
